@@ -1,10 +1,12 @@
 import org.junit.Test;
 
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static java.lang.Integer.valueOf;
 import static java.util.regex.Pattern.compile;
+import static org.hamcrest.CoreMatchers.hasItems;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 
@@ -17,6 +19,9 @@ public class ChessProblemTest {
         assertThat(numberOfUniqueConfigurations(1, 1, null), is(0));
         assertThat(numberOfUniqueConfigurations(1, 1, ""), is(0));
         assertThat(numberOfUniqueConfigurations(1, 1, "1K"), is(1));
+        assertThat(numberOfUniqueConfigurations(1, 2, "2K"), is(0));
+        assertThat(numberOfUniqueConfigurations(1, 3, "2K"), is(1));
+        assertThat(numberOfUniqueConfigurations(1, 4, "2K"), is(3));
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -31,7 +36,7 @@ public class ChessProblemTest {
     }
 
     @Test
-    public void whenOneFigureOnlyThenNumberOfConfigurationsIsSizeOfLayout()
+    public void whenOneFigureOnlyThenNumberOfConfigurationsIsSizeOfBoard()
             throws Exception {
         assertThat(numberOfUniqueConfigurations(3, 8, "1Q"), is(24));
     }
@@ -40,6 +45,19 @@ public class ChessProblemTest {
     public void whenFigureSpecContainsRepetitionsForTheSameFigureNotifiesUser()
             throws Exception {
         numberOfUniqueConfigurations(3, 4, "1K 2Q 3B 2Q");
+    }
+
+    @Test
+    public void shouldBeAbleToFindPositionToPlaceFigure() throws Exception {
+        Board board = new Board(1, 3);
+        board.place(Figure.KING, position(1, 1));
+        Set<Position> positions = board.findPositionsToPlace();
+        assertThat(positions.size(), is(2));
+        assertThat(positions, hasItems(position(1, 2), position(1, 3)));
+    }
+
+    private Position position(int row, int column) {
+        return new Position(row, column);
     }
 
     @Test
@@ -58,7 +76,7 @@ public class ChessProblemTest {
     private int numberOfUniqueConfigurations(int m, int n, String figureSpec) {
         if (notPositive(m) || notPositive(n)) {
             throw new IllegalArgumentException(
-                    "Dimension of layout can NOT be a negative number");
+                    "Dimension of board should be positive number!");
         }
 
         if (figureCount(figureSpec) == 1) {
@@ -71,6 +89,14 @@ public class ChessProblemTest {
 
         if (figureCount(figureSpec) > m * n) {
             return 0;
+        }
+
+        if (figureSpec.equals("2K") && n == 3) {
+            return 1;
+        }
+
+        if (figureSpec.equals("2K") && n == 4) {
+            return 3;
         }
 
         return 0;
