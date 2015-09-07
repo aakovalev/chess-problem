@@ -50,7 +50,9 @@ public class ChessProblemTest {
     @Test
     public void shouldBeAbleToFindPositionToPlaceFigure() throws Exception {
         Board board = new Board(1, 3);
-        board.place(Figure.KING, position(1, 1));
+        Position position = position(1, 1);
+        Figure figure = FigureType.KING.createFigure(board, position);
+        board.place(figure);
         Set<Position> positions = board.findPositionsToPlace();
         assertThat(positions.size(), is(2));
         assertThat(positions, hasItems(position(1, 2), position(1, 3)));

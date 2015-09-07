@@ -26,4 +26,12 @@ public class Position {
         result = 31 * result + column;
         return result;
     }
+
+    public int getRow() {
+        return row;
+    }
+
+    public int getColumn() {
+        return column;
+    }
 }
