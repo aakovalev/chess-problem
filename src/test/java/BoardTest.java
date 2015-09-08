@@ -6,6 +6,8 @@ import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.hasItems;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertThat;
 
 public class BoardTest {
@@ -63,6 +65,43 @@ public class BoardTest {
                 new Position(1, 3), new Position(2, 3)));
     }
 
+    @Test
+    public void shouldEqualIfMatchesSizeFigureTypesAndPositionOccupied()
+            throws Exception {
+
+        Board oneBoard = new Board(5, 5);
+        Board anotherBoard = new Board(5, 5);
+
+        KingFigure k1 = new KingFigure(oneBoard, new Position(1, 1));
+        KingFigure k2 = new KingFigure(anotherBoard, new Position(3, 3));
+
+        placeFigures(oneBoard, k1, k2);
+        placeFigures(anotherBoard, k2, k1);
+
+        assertEquals(oneBoard, anotherBoard);
+    }
+
+    @Test
+    public void shouldNotEqualsIfSizeAreDifferent() throws Exception {
+        Board oneBoard = new Board(5, 5);
+        Board anotherBoard = new Board(3, 3);
+
+        assertNotEquals(oneBoard, anotherBoard);
+    }
+
+    @Test
+    public void shouldNotEqualsIfFiguresPlacedAtDifferentPositions() throws Exception {
+        Board oneBoard = new Board(5, 5);
+        Board anotherBoard = new Board(5, 5);
+        KingFigure k1 = new KingFigure(oneBoard, new Position(3, 3));
+        KingFigure k2 = new KingFigure(anotherBoard, new Position(1, 1));
+
+        oneBoard.place(k1);
+        anotherBoard.place(k2);
+
+        assertNotEquals(oneBoard, anotherBoard);
+    }
+
     @Test(expected = OutOfBoardPosition.class)
     public void whenFigureIsNotWithinTheBoardThenNotifiesClient() throws Exception {
         Board board = new Board(2, 3);
@@ -70,6 +109,12 @@ public class BoardTest {
                 board, getOutOfBoardPosition(board));
 
         board.place(figure);
+    }
+
+    private void placeFigures(Board board, Figure ... figures) {
+        for (Figure theFigure: figures) {
+            board.place(theFigure);
+        }
     }
 
     private Position getOutOfBoardPosition(Board board) {

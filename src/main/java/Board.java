@@ -44,6 +44,29 @@ public class Board implements Bounded {
         markThreatenedPositions(figure);
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Board board = (Board) o;
+
+        if (columns != board.columns) return false;
+        if (rows != board.rows) return false;
+        if (!figuresByOccupiedPositions.equals(board.figuresByOccupiedPositions))
+            return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = rows;
+        result = 31 * result + columns;
+        result = 31 * result + figuresByOccupiedPositions.hashCode();
+        return result;
+    }
+
     protected Set<Position> getThreatenedPositions() {
         return unmodifiableSet(threatenedPositions);
     }
