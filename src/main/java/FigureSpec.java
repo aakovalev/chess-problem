@@ -1,5 +1,5 @@
-import java.util.ArrayList;
-import java.util.List;
+import java.util.LinkedList;
+import java.util.Queue;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -17,8 +17,8 @@ public class FigureSpec {
         this.figureSpecAsText = figureSpecAsText;
     }
 
-    public List<FigureType> toFigureList() {
-        List<FigureType> figureTypes = new ArrayList<>();
+    public Queue<FigureType> toFigureSequence() {
+        Queue<FigureType> figureTypes = new LinkedList<>();
         if (!isEmptyOrNull(figureSpecAsText)) {
             String normalizedFigureSpec = normalizeFigureSpec(figureSpecAsText);
             validate(normalizedFigureSpec);
@@ -53,7 +53,7 @@ public class FigureSpec {
         return figureSpecAsText.replace(" ", "");
     }
 
-    public static List<FigureType> toFigureList(String figureSpecAsText) {
-        return new FigureSpec(figureSpecAsText).toFigureList();
+    public static Queue<FigureType> toFigureSequence(String figureSpecAsText) {
+        return new FigureSpec(figureSpecAsText).toFigureSequence();
     }
 }

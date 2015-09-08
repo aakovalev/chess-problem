@@ -4,12 +4,22 @@ public enum FigureType {
         protected Figure createFigure() {
             return new KingFigure();
         }
+
+        @Override
+        public String toString() {
+            return "K";
+        }
     },
 
     QUEEN {
         @Override
         protected Figure createFigure() {
             return null;
+        }
+
+        @Override
+        public String toString() {
+            return "Q";
         }
     },
 
@@ -18,6 +28,11 @@ public enum FigureType {
         protected Figure createFigure() {
             return null;
         }
+
+        @Override
+        public String toString() {
+            return "B";
+        }
     },
 
     ROOK {
@@ -25,12 +40,22 @@ public enum FigureType {
         protected Figure createFigure() {
             return null;
         }
+
+        @Override
+        public String toString() {
+            return "R";
+        }
     },
 
     KNIGHT {
         @Override
         protected Figure createFigure() {
             return null;
+        }
+
+        @Override
+        public String toString() {
+            return "N";
         }
     };
 

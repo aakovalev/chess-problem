@@ -2,7 +2,7 @@ import java.util.*;
 
 import static java.util.Collections.unmodifiableSet;
 
-public class Board implements Bounded {
+public class Board implements Bounded, Cloneable {
     private final int rows;
     private final int columns;
     private Map<Position, FigureType> figuresByOccupiedPositions = new HashMap<>();
@@ -43,6 +43,46 @@ public class Board implements Bounded {
         figure.setPosition(position);
         updateOccupiedPositions(figure);
         updatePositionsUnderThreat(figure);
+    }
+
+    public boolean canPlace(Figure figure, Position position) {
+        Set<Position> positionsUnderThreat =
+                figure.getPositionsUnderThreatWhenPlacedOn(this, position);
+        for (Position p: positionsUnderThreat) {
+            if (isOccupied(p)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder content = new StringBuilder();
+        for (int i = 1; i <= rows; i++) {
+            for (int j = 1; j <= columns; j++) {
+                Position position = new Position(i, j);
+                String posSymbol = "#";
+                if (isOccupied(position)) {
+                    posSymbol = figuresByOccupiedPositions.get(position).toString();
+                }
+                content.append(posSymbol).append(" ");
+            }
+            content.append("\n");
+        }
+        return content.toString();
+    }
+
+    public Board clone() {
+        try {
+            Board board = (Board) super.clone();
+            board.threatenedPositions = new HashSet<>(this.threatenedPositions);
+            board.figuresByOccupiedPositions =
+                    new HashMap<>(this.figuresByOccupiedPositions);
+            return board;
+        } catch (CloneNotSupportedException e) {
+            throw new InternalError();
+        }
     }
 
     @Override

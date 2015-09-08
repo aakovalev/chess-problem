@@ -6,9 +6,7 @@ import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.hasItems;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertThat;
+import static org.junit.Assert.*;
 
 public class BoardTest {
     @Test
@@ -89,7 +87,8 @@ public class BoardTest {
     }
 
     @Test
-    public void shouldNotEqualsIfFiguresPlacedAtDifferentPositions() throws Exception {
+    public void shouldNotEqualsIfFiguresPlacedAtDifferentPositions()
+            throws Exception {
         Board oneBoard = new Board(5, 5);
         Board anotherBoard = new Board(5, 5);
 
@@ -99,11 +98,31 @@ public class BoardTest {
         assertNotEquals(oneBoard, anotherBoard);
     }
 
+    @Test
+    public void shouldTellIfCanPlaceFigureToBoardWithoutThreateningOthers()
+            throws Exception {
+        Board board = new Board(1, 3);
+        board.place(new KingFigure(), new Position(1, 1));
+
+        assertTrue(board.canPlace(new KingFigure(), new Position(1, 3)));
+        assertFalse(board.canPlace(new KingFigure(), new Position(1, 2)));
+    }
+
     @Test(expected = OutOfBoardPosition.class)
     public void whenFigureIsNotWithinTheBoardThenNotifiesClient() throws Exception {
         Board board = new Board(2, 3);
 
         board.place(new KingFigure(), getOutOfBoardPosition(board));
+    }
+
+    @Test
+    public void cloneInstanceIsEqualOriginalInstance() throws Exception {
+        Board originalBoard = new Board(2, 3);
+        originalBoard.place(new KingFigure(), new Position(2, 2));
+
+        Board clonedBoard = originalBoard.clone();
+
+        assertEquals(originalBoard, clonedBoard);
     }
 
     private Position getOutOfBoardPosition(Board board) {
