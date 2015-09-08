@@ -1,20 +1,16 @@
 import java.util.*;
 
+import static java.util.Collections.unmodifiableSet;
+
 public class Board implements Bounded {
     private final int rows;
     private final int columns;
     private Map<Position, FigureType> figuresByOccupiedPositions = new HashMap<>();
+    private Set<Position> threatenedPositions = new HashSet<>();
 
     public Board(int rows, int columns) {
         this.rows = rows;
         this.columns = columns;
-    }
-
-    public List<Position> optionsToPlaceWithoutTreat(FigureType figureType) {
-        // not occupied
-        // not treatedByOtherFigures
-        // treatedByThisFigure does not contain any from occupied
-        return new ArrayList<>();
     }
 
     public Set<Position> findPositionsToPlace() {
@@ -52,6 +48,15 @@ public class Board implements Bounded {
         if (isNotWithinBounds(figure.getPosition())) {
             throw new OutOfBoardPosition();
         }
+        markOccupiedPosition(figure);
+        markThreatenedPositions(figure);
+    }
+
+    private void markThreatenedPositions(Figure figure) {
+        threatenedPositions.addAll(figure.getPositionsUnderThreat());
+    }
+
+    private void markOccupiedPosition(Figure figure) {
         figuresByOccupiedPositions.put(figure.getPosition(), figure.getType());
     }
 
@@ -60,5 +65,9 @@ public class Board implements Bounded {
                 || position.getColumn() < 1
                 || position.getRow() > getMaxRows()
                 || position.getColumn() > getMaxColumns();
+    }
+
+    public Set<Position> getThreatenedPositions() {
+        return unmodifiableSet(threatenedPositions);
     }
 }

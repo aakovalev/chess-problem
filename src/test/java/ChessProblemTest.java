@@ -93,6 +93,31 @@ public class ChessProblemTest {
             return 0;
         }
 
+        /**
+         Set<Board> foundLayouts = new HashSet<>();
+         Board board = new Board(m, n);
+         Queue<FigureType> figuresToPlace = figureSpec.toFigureQueue();
+         while (!figuresToPlace.isEmpty()) {
+            FigureType figureType = figuresToPlace.take();
+            Set<Position> availablePositions =
+                board.findPositionToPlaceFigureWithoutThreat();
+            for (Set<Position> position : availablePositions) {
+                Figure figure = figureType.createFigure(board, position);
+                if (board.canPlace(figure)) {
+                    board.place(figure);
+                    if (figuresToPlace.isEmpty()) {
+                        foundLayouts.add(board);
+                    }
+                    else {
+                        Set<Board> layouts = findLayouts(board.makeCopy(), figuresToPlace.makeCopy().removeFirst);
+                        foundLayout.add(layouts);
+                    }
+                }
+            }
+         }
+         return foundLayouts;
+         */
+
         if (figureSpec.equals("2K") && n == 3) {
             return 1;
         }
