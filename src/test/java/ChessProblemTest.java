@@ -52,7 +52,9 @@ public class ChessProblemTest {
         Board board = new Board(1, 3);
         Position position = position(1, 1);
         Figure figure = new KingFigure(board, position);
+
         board.place(figure);
+
         Set<Position> positions = board.findPositionsToPlace();
         assertThat(positions.size(), is(1));
         assertThat(positions, hasItems(position(1, 3)));

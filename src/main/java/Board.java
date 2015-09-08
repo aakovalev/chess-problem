@@ -26,18 +26,6 @@ public class Board implements Bounded {
         return availablePositions;
     }
 
-    private boolean isThreatened(Position position) {
-        return threatenedPositions.contains(position);
-    }
-
-    private boolean isOccupied(Position position) {
-        return getOccupiedPositions().contains(position);
-    }
-
-    protected Set<Position> getOccupiedPositions() {
-        return figuresByOccupiedPositions.keySet();
-    }
-
     @Override
     public int getMaxRows() {
         return rows;
@@ -56,6 +44,22 @@ public class Board implements Bounded {
         markThreatenedPositions(figure);
     }
 
+    protected Set<Position> getThreatenedPositions() {
+        return unmodifiableSet(threatenedPositions);
+    }
+
+    protected Set<Position> getOccupiedPositions() {
+        return figuresByOccupiedPositions.keySet();
+    }
+
+    private boolean isThreatened(Position position) {
+        return threatenedPositions.contains(position);
+    }
+
+    private boolean isOccupied(Position position) {
+        return getOccupiedPositions().contains(position);
+    }
+
     private void markThreatenedPositions(Figure figure) {
         threatenedPositions.addAll(figure.getPositionsUnderThreat());
     }
@@ -69,9 +73,5 @@ public class Board implements Bounded {
                 || position.getColumn() < 1
                 || position.getRow() > getMaxRows()
                 || position.getColumn() > getMaxColumns();
-    }
-
-    public Set<Position> getThreatenedPositions() {
-        return unmodifiableSet(threatenedPositions);
     }
 }
