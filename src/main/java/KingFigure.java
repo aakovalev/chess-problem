@@ -2,20 +2,13 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-public class KingFigure implements Figure {
-    private final Bounded board;
-    private final Position position;
+public class KingFigure extends AbstractFigure {
 
-    public KingFigure(Bounded board, Position position) {
-        this.board = board;
-        this.position = position;
-    }
-
-    @Override
-    public Set<Position> getPositionsUnderThreat() {
+    public Set<Position> getPositionsUnderThreatWhenPlacedOn(
+            Bounded board, Position ownPosition) {
         Set<Position> positionsUnderThreat = new HashSet<>();
-        int row = position.getRow();
-        int column = position.getColumn();
+        int row = ownPosition.getRow();
+        int column = ownPosition.getColumn();
 
         if (row > 1) {
             positionsUnderThreat.add(new Position(row - 1, column));
@@ -55,10 +48,5 @@ public class KingFigure implements Figure {
     @Override
     public FigureType getType() {
         return FigureType.KING;
-    }
-
-    @Override
-    public Position getPosition() {
-        return new Position(position.getRow(), position.getColumn());
     }
 }

@@ -23,9 +23,8 @@ public class BoardTest {
             throws Exception {
         Board board = new Board(2, 3);
         Position thePosition = new Position(1, 1);
-        Figure figure = FigureType.KING.createFigure(board, thePosition);
 
-        board.place(figure);
+        board.place(new KingFigure(), thePosition);
 
         Set<Position> occupiedPositions = board.getOccupiedPositions();
         assertThat(occupiedPositions, hasSize(1));
@@ -38,9 +37,8 @@ public class BoardTest {
 
         Board board = new Board(5, 5);
         Position position = new Position(3, 3);
-        Figure figure = new KingFigure(board, position);
 
-        board.place(figure);
+        board.place(new KingFigure(), position);
 
         Set<Position> threatenedPositions = board.getThreatenedPositions();
         assertThat(threatenedPositions, hasSize(8));
@@ -54,9 +52,8 @@ public class BoardTest {
     public void canFindNonThreatenedAndOccupiedPositions() throws Exception {
         Board board = new Board(3, 3);
         Position position = new Position(1, 1);
-        Figure figure = new KingFigure(board, position);
 
-        board.place(figure);
+        board.place(new KingFigure(), position);
 
         Set<Position> availablePositions = board.findPositionsToPlace();
         assertThat(availablePositions, hasSize(5));
@@ -72,11 +69,13 @@ public class BoardTest {
         Board oneBoard = new Board(5, 5);
         Board anotherBoard = new Board(5, 5);
 
-        KingFigure k1 = new KingFigure(oneBoard, new Position(1, 1));
-        KingFigure k2 = new KingFigure(anotherBoard, new Position(3, 3));
+        Position onePosition = new Position(1, 1);
+        Position anotherPosition = new Position(3, 3);
 
-        placeFigures(oneBoard, k1, k2);
-        placeFigures(anotherBoard, k2, k1);
+        oneBoard.place(new KingFigure(), onePosition);
+        oneBoard.place(new KingFigure(), anotherPosition);
+        anotherBoard.place(new KingFigure(), onePosition);
+        anotherBoard.place(new KingFigure(), anotherPosition);
 
         assertEquals(oneBoard, anotherBoard);
     }
@@ -93,11 +92,9 @@ public class BoardTest {
     public void shouldNotEqualsIfFiguresPlacedAtDifferentPositions() throws Exception {
         Board oneBoard = new Board(5, 5);
         Board anotherBoard = new Board(5, 5);
-        KingFigure k1 = new KingFigure(oneBoard, new Position(3, 3));
-        KingFigure k2 = new KingFigure(anotherBoard, new Position(1, 1));
 
-        oneBoard.place(k1);
-        anotherBoard.place(k2);
+        oneBoard.place(new KingFigure(), new Position(3, 3));
+        anotherBoard.place(new KingFigure(), new Position(1, 1));
 
         assertNotEquals(oneBoard, anotherBoard);
     }
@@ -105,16 +102,8 @@ public class BoardTest {
     @Test(expected = OutOfBoardPosition.class)
     public void whenFigureIsNotWithinTheBoardThenNotifiesClient() throws Exception {
         Board board = new Board(2, 3);
-        Figure figure = FigureType.KING.createFigure(
-                board, getOutOfBoardPosition(board));
 
-        board.place(figure);
-    }
-
-    private void placeFigures(Board board, Figure ... figures) {
-        for (Figure theFigure: figures) {
-            board.place(theFigure);
-        }
+        board.place(new KingFigure(), getOutOfBoardPosition(board));
     }
 
     private Position getOutOfBoardPosition(Board board) {

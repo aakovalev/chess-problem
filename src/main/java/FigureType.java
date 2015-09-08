@@ -1,10 +1,10 @@
 public enum FigureType {
     KING {
         @Override
-        protected Figure createFigure(Bounded board, Position position) {
-            return new KingFigure(board, position);
+        protected Figure createFigure() {
+            return new KingFigure();
         }
     };
 
-    protected abstract Figure createFigure(Bounded board, Position position);
+    abstract protected Figure createFigure();
 }

@@ -59,9 +59,10 @@ public class KingFigureTest {
 
     private void verifyPositionsUnderThreat(
             Position position, Position... expectedPositions) {
-        Figure king = FigureType.KING.createFigure(board, position);
+        Figure king = new KingFigure();
 
-        Set<Position> positionsUnderThreat = king.getPositionsUnderThreat();
+        Set<Position> positionsUnderThreat =
+                king.getPositionsUnderThreatWhenPlacedOn(board, position);
 
         assertThat(positionsUnderThreat, hasSize(expectedPositions.length));
         assertThat(positionsUnderThreat, hasItems(expectedPositions));

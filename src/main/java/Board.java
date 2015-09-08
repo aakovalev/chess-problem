@@ -36,12 +36,13 @@ public class Board implements Bounded {
         return columns;
     }
 
-    public void place(Figure figure) {
-        if (isNotWithinBounds(figure.getPosition())) {
+    public void place(Figure figure, Position position) {
+        if (isNotWithinBounds(position)) {
             throw new OutOfBoardPosition();
         }
-        markOccupiedPosition(figure);
-        markThreatenedPositions(figure);
+        figure.setPosition(position);
+        updateOccupiedPositions(figure);
+        updatePositionsUnderThreat(figure);
     }
 
     @Override
@@ -83,11 +84,13 @@ public class Board implements Bounded {
         return getOccupiedPositions().contains(position);
     }
 
-    private void markThreatenedPositions(Figure figure) {
-        threatenedPositions.addAll(figure.getPositionsUnderThreat());
+    private void updatePositionsUnderThreat(Figure figure) {
+        threatenedPositions.addAll(
+                figure.getPositionsUnderThreatWhenPlacedOn(
+                        this, figure.getPosition()));
     }
 
-    private void markOccupiedPosition(Figure figure) {
+    private void updateOccupiedPositions(Figure figure) {
         figuresByOccupiedPositions.put(figure.getPosition(), figure.getType());
     }
 
