@@ -4,7 +4,60 @@ public enum FigureType {
         protected Figure createFigure() {
             return new KingFigure();
         }
+    },
+
+    QUEEN {
+        @Override
+        protected Figure createFigure() {
+            return null;
+        }
+    },
+
+    BISHOP {
+        @Override
+        protected Figure createFigure() {
+            return null;
+        }
+    },
+
+    ROOK {
+        @Override
+        protected Figure createFigure() {
+            return null;
+        }
+    },
+
+    KNIGHT {
+        @Override
+        protected Figure createFigure() {
+            return null;
+        }
     };
 
     abstract protected Figure createFigure();
+
+    public static FigureType fromString(String typeString) {
+        if ("K".equals(typeString)) {
+            return KING;
+        }
+
+        if ("Q".equals(typeString)) {
+            return QUEEN;
+        }
+
+        if ("B".equals(typeString)) {
+            return BISHOP;
+        }
+
+        if ("R".equals(typeString)) {
+            return ROOK;
+        }
+
+        if ("N".equals(typeString)) {
+            return KNIGHT;
+        }
+
+        throw new IllegalArgumentException(
+                "Given type string does not correspond to existed types");
+    }
 }
