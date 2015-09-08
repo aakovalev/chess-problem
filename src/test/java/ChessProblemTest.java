@@ -54,8 +54,8 @@ public class ChessProblemTest {
         Figure figure = FigureType.KING.createFigure(board, position);
         board.place(figure);
         Set<Position> positions = board.findPositionsToPlace();
-        assertThat(positions.size(), is(2));
-        assertThat(positions, hasItems(position(1, 2), position(1, 3)));
+        assertThat(positions.size(), is(1));
+        assertThat(positions, hasItems(position(1, 3)));
     }
 
     private Position position(int row, int column) {

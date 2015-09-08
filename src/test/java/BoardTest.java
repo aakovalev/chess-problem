@@ -48,7 +48,22 @@ public class BoardTest {
                 new Position(4, 2), new Position(3, 2)));
     }
 
-    @Test (expected = OutOfBoardPosition.class)
+    @Test
+    public void canFindNonThreatenedAndOccupiedPositions() throws Exception {
+        Board board = new Board(3, 3);
+        Position position = new Position(1, 1);
+        Figure figure = new KingFigure(board, position);
+
+        board.place(figure);
+
+        Set<Position> availablePositions = board.findPositionsToPlace();
+        assertThat(availablePositions, hasSize(5));
+        assertThat(availablePositions, hasItems(
+                new Position(3, 1), new Position(3, 2), new Position(3, 3),
+                new Position(1, 3), new Position(2, 3)));
+    }
+
+    @Test(expected = OutOfBoardPosition.class)
     public void whenFigureIsNotWithinTheBoardThenNotifiesClient() throws Exception {
         Board board = new Board(2, 3);
         Figure figure = FigureType.KING.createFigure(

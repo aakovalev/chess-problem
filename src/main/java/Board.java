@@ -18,12 +18,16 @@ public class Board implements Bounded {
         for (int i = 1; i <= rows; i++) {
             for (int j = 1; j <= columns; j++) {
                 Position position = new Position(i, j);
-                if (!isOccupied(position)) {
+                if (!isOccupied(position) && !isThreatened(position)) {
                     availablePositions.add(position);
                 }
             }
         }
         return availablePositions;
+    }
+
+    private boolean isThreatened(Position position) {
+        return threatenedPositions.contains(position);
     }
 
     private boolean isOccupied(Position position) {
