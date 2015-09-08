@@ -1,13 +1,7 @@
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.Set;
-
-import static org.hamcrest.CoreMatchers.hasItems;
-import static org.hamcrest.Matchers.hasSize;
-import static org.junit.Assert.assertThat;
-
-public class KingFigureTest {
+public class KingFigureTest extends CommonFigureTest {
     private Board board;
     private Position rightUpperCorner;
     private Position leftUpperCorner;
@@ -57,14 +51,13 @@ public class KingFigureTest {
                 new Position(middle.getRow(), middle.getColumn() - 1));
     }
 
-    private void verifyPositionsUnderThreat(
-            Position position, Position... expectedPositions) {
-        Figure king = new KingFigure();
+    @Override
+    protected Figure createFigure() {
+        return new KingFigure();
+    }
 
-        Set<Position> positionsUnderThreat =
-                king.getPositionsUnderThreatWhenPlacedOn(board, position);
-
-        assertThat(positionsUnderThreat, hasSize(expectedPositions.length));
-        assertThat(positionsUnderThreat, hasItems(expectedPositions));
+    @Override
+    protected Board getBoard() {
+        return board;
     }
 }

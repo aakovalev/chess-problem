@@ -9,8 +9,4 @@ public abstract class AbstractFigure implements Figure {
     public void setPosition(Position position) {
         this.position = position;
     }
-
-    public void placeOn(Board board, Position position) {
-        board.place(this, position);
-    }
 }

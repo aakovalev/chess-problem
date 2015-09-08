@@ -38,7 +38,7 @@ public enum FigureType {
     ROOK {
         @Override
         protected Figure createFigure() {
-            return null;
+            return new RookFigure();
         }
 
         @Override
