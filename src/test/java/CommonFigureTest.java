@@ -1,5 +1,3 @@
-import org.junit.Before;
-
 import java.util.Set;
 
 import static org.hamcrest.CoreMatchers.hasItems;
@@ -19,5 +17,21 @@ public abstract class CommonFigureTest {
 
         assertThat(positionsUnderThreat, hasSize(expectedPositions.length));
         assertThat(positionsUnderThreat, hasItems(expectedPositions));
+    }
+
+    protected Position getLeftUpperCorner() {
+        return new Position(1, 1);
+    }
+
+    protected Position getRightUpperCorner() {
+        return new Position(1, getBoard().getMaxColumns());
+    }
+
+    protected Position getRightDownCorner() {
+        return new Position(getBoard().getMaxRows(), getBoard().getMaxColumns());
+    }
+
+    protected Position getLeftDownCorner() {
+        return new Position(getBoard().getMaxRows(), 1);
     }
 }

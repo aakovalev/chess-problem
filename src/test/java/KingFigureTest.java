@@ -3,39 +3,31 @@ import org.junit.Test;
 
 public class KingFigureTest extends CommonFigureTest {
     private Board board;
-    private Position rightUpperCorner;
-    private Position leftUpperCorner;
-    private Position rightDownCorner;
-    private Position leftDownCorner;
     private Position middle;
 
     @Before
     public void setUp() throws Exception {
         board = new Board(5, 5);
-        leftUpperCorner = new Position(1, 1);
-        rightUpperCorner = new Position(1, board.getMaxColumns());
-        rightDownCorner = new Position(board.getMaxRows(), board.getMaxColumns());
-        leftDownCorner = new Position(board.getMaxRows(), 1);
         middle = new Position(3, 3);
     }
 
     @Test
     public void shouldTellPositionsUnderThreat() throws Exception {
         verifyPositionsUnderThreat(
-                leftUpperCorner,
+                getLeftUpperCorner(),
                 new Position(1, 2), new Position(2, 1), new Position(2, 2));
 
-        verifyPositionsUnderThreat(rightUpperCorner,
+        verifyPositionsUnderThreat(getRightUpperCorner(),
                 new Position(1, board.getMaxColumns() - 1),
                 new Position(2, board.getMaxColumns() - 1),
                 new Position(2, board.getMaxColumns()));
 
-        verifyPositionsUnderThreat(rightDownCorner,
+        verifyPositionsUnderThreat(getRightDownCorner(),
                 new Position(board.getMaxRows() - 1, board.getMaxColumns()),
                 new Position(board.getMaxRows() - 1, board.getMaxColumns() - 1),
                 new Position(board.getMaxRows(), board.getMaxColumns() - 1));
 
-        verifyPositionsUnderThreat(leftDownCorner,
+        verifyPositionsUnderThreat(getLeftDownCorner(),
                 new Position(board.getMaxRows() - 1, 1),
                 new Position(board.getMaxRows() - 1, 2),
                 new Position(board.getMaxRows(), 2));
