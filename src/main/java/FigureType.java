@@ -14,7 +14,7 @@ public enum FigureType {
     QUEEN {
         @Override
         protected Figure createFigure() {
-            return null;
+            return new QueenFigure();
         }
 
         @Override
@@ -26,7 +26,7 @@ public enum FigureType {
     BISHOP {
         @Override
         protected Figure createFigure() {
-            return null;
+            return new BishopFigure();
         }
 
         @Override

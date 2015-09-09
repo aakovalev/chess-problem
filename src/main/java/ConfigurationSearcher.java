@@ -3,6 +3,10 @@ import java.util.*;
 public class ConfigurationSearcher {
     private boolean drawFoundLayouts;
 
+    public static void main(String[] args) {
+        ConfigurationSearcher searcher = new ConfigurationSearcher(true);
+    }
+
     public ConfigurationSearcher(boolean drawFoundLayouts) {
         this.drawFoundLayouts = drawFoundLayouts;
     }

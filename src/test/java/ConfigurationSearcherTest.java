@@ -34,6 +34,19 @@ public class ConfigurationSearcherTest {
         assertThat(searcher.numberOfUniqueConfigurations(4, 4, "2R 4N"), is(8));
     }
 
+    @Test
+    public void trivialCaseForBishops() throws Exception {
+        ConfigurationSearcher searcher = new ConfigurationSearcher();
+        assertThat(searcher.numberOfUniqueConfigurations(2, 2, "2B"), is(4));
+    }
+
+    @Test
+    public void twoKingsOneQueenOneBishopOneRookOneKnight() throws Exception {
+        ConfigurationSearcher searcher = new ConfigurationSearcher(true);
+        System.out.println("Output :"
+                + searcher.numberOfUniqueConfigurations(6, 9, "2K 1Q 1B 1R 1N"));
+    }
+
     @Test(expected = IllegalArgumentException.class)
     public void dimensionOfTheBoardShouldBePositiveNumber() throws Exception {
         numberOfUniqueConfigurations(0, -1, "");
