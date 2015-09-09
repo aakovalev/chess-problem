@@ -50,7 +50,7 @@ public enum FigureType {
     KNIGHT {
         @Override
         protected Figure createFigure() {
-            return null;
+            return new KnightFigure();
         }
 
         @Override

@@ -28,6 +28,12 @@ public class ConfigurationSearcherTest {
         assertThat(searcher.numberOfUniqueConfigurations(3, 3, "2K 1R"), is(4));
     }
 
+    @Test
+    public void twoRooksFourKnightsExample() throws Exception {
+        ConfigurationSearcher searcher = new ConfigurationSearcher(true);
+        assertThat(searcher.numberOfUniqueConfigurations(4, 4, "2R 4N"), is(8));
+    }
+
     @Test(expected = IllegalArgumentException.class)
     public void dimensionOfTheBoardShouldBePositiveNumber() throws Exception {
         numberOfUniqueConfigurations(0, -1, "");
