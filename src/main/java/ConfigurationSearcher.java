@@ -47,12 +47,11 @@ public class ConfigurationSearcher {
             Board board, Queue<FigureType> figuresToPlace) {
 
         Set<Board> foundLayouts = new HashSet<>();
-
         FigureType figureType = figuresToPlace.poll();
-        Figure figure = figureType.createFigure();
         Set<Position> availablePositions = board.findPositionsToPlace();
         for (Position position : availablePositions) {
             Board boardClone = board.clone();
+            Figure figure = figureType.createFigure();
             if (boardClone.canPlace(figure, position)) {
                 boardClone.place(figure, position);
                 if (figuresToPlace.isEmpty()) {

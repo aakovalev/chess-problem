@@ -1,12 +1,10 @@
-import java.util.*;
-
-import static java.util.Collections.unmodifiableSet;
+import java.util.HashSet;
+import java.util.Set;
 
 public class Board implements Bounded, Cloneable {
     private final int rows;
     private final int columns;
-    private Map<Position, FigureType> figuresByOccupiedPositions = new HashMap<>();
-    private Set<Position> threatenedPositions = new HashSet<>();
+    private Set<Figure> placedFigures = new HashSet<>();
 
     public Board(int rows, int columns) {
         this.rows = rows;
@@ -41,8 +39,7 @@ public class Board implements Bounded, Cloneable {
             throw new OutOfBoardPosition();
         }
         figure.setPosition(position);
-        updateOccupiedPositions(figure);
-        updatePositionsUnderThreat(figure);
+        placedFigures.add(figure);
     }
 
     public boolean canPlace(Figure figure, Position position) {
@@ -64,7 +61,7 @@ public class Board implements Bounded, Cloneable {
                 Position position = new Position(i, j);
                 String posSymbol = "#";
                 if (isOccupied(position)) {
-                    posSymbol = figuresByOccupiedPositions.get(position).toString();
+                    posSymbol = findFigureTypeByPosition(position).toString();
                 }
                 content.append(posSymbol).append(" ");
             }
@@ -73,12 +70,19 @@ public class Board implements Bounded, Cloneable {
         return content.toString();
     }
 
+    private FigureType findFigureTypeByPosition(Position position) {
+        for (Figure figure : placedFigures) {
+            if (figure.getPosition().equals(position)) {
+                return figure.getType();
+            }
+        }
+        throw new IllegalStateException("No figure at this position!");
+    }
+
     public Board clone() {
         try {
             Board board = (Board) super.clone();
-            board.threatenedPositions = new HashSet<>(this.threatenedPositions);
-            board.figuresByOccupiedPositions =
-                    new HashMap<>(this.figuresByOccupiedPositions);
+            board.placedFigures = new HashSet<>(placedFigures);
             return board;
         } catch (CloneNotSupportedException e) {
             throw new InternalError();
@@ -92,46 +96,43 @@ public class Board implements Bounded, Cloneable {
 
         Board board = (Board) o;
 
-        if (columns != board.columns) return false;
-        if (rows != board.rows) return false;
-        if (!figuresByOccupiedPositions.equals(board.figuresByOccupiedPositions))
-            return false;
-
-        return true;
+        return columns == board.columns &&
+                rows == board.rows &&
+                placedFigures.equals(board.placedFigures);
     }
 
     @Override
     public int hashCode() {
         int result = rows;
         result = 31 * result + columns;
-        result = 31 * result + figuresByOccupiedPositions.hashCode();
+        result = 31 * result + placedFigures.hashCode();
         return result;
     }
 
     protected Set<Position> getThreatenedPositions() {
-        return unmodifiableSet(threatenedPositions);
+        HashSet<Position> threatenedPositions = new HashSet<>();
+        for (Figure figure : placedFigures) {
+            threatenedPositions.addAll(
+                    figure.getPositionsUnderThreatWhenPlacedOn(
+                            this, figure.getPosition()));
+        }
+        return threatenedPositions;
     }
 
     protected Set<Position> getOccupiedPositions() {
-        return figuresByOccupiedPositions.keySet();
+        Set<Position> occupiedPositions = new HashSet<>();
+        for (Figure figure : placedFigures) {
+            occupiedPositions.add(figure.getPosition());
+        }
+        return occupiedPositions;
     }
 
     private boolean isThreatened(Position position) {
-        return threatenedPositions.contains(position);
+        return getThreatenedPositions().contains(position);
     }
 
     private boolean isOccupied(Position position) {
         return getOccupiedPositions().contains(position);
-    }
-
-    private void updatePositionsUnderThreat(Figure figure) {
-        threatenedPositions.addAll(
-                figure.getPositionsUnderThreatWhenPlacedOn(
-                        this, figure.getPosition()));
-    }
-
-    private void updateOccupiedPositions(Figure figure) {
-        figuresByOccupiedPositions.put(figure.getPosition(), figure.getType());
     }
 
     private boolean isNotWithinBounds(Position position) {
