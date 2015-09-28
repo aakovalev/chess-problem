@@ -27,8 +27,8 @@ public class BishopFigureTest extends CommonFigureTest {
     }
 
     @Override
-    protected Figure createFigure() {
-        return new BishopFigure();
+    protected Figure getFigure() {
+        return Figure.BISHOP;
     }
 
     @Override

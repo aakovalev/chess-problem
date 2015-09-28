@@ -1,21 +1,28 @@
-import java.util.HashSet;
-import java.util.Set;
+import java.lang.ref.SoftReference;
+import java.util.*;
 
 public class Board implements Bounded, Cloneable {
-    private final int rows;
-    private final int columns;
-    private Set<Figure> placedFigures = new HashSet<>();
+    private final byte rows;
+    private final byte columns;
+    private char[][] positions;
+
+    private SoftReference<Set<Position>> cachedThreatenedPositions =
+            new SoftReference<Set<Position>>(new HashSet<Position>());
+
+    private SoftReference<List<Position>> cachedOccupiedPositions =
+            new SoftReference<List<Position>>(new ArrayList<Position>());
 
     public Board(int rows, int columns) {
-        this.rows = rows;
-        this.columns = columns;
+        this.rows = (byte) rows;
+        this.columns = (byte) columns;
+        positions = new char[rows][columns];
     }
 
     public Set<Position> findPositionsToPlace() {
         Set<Position> availablePositions = new HashSet<>();
-        for (int i = 1; i <= rows; i++) {
-            for (int j = 1; j <= columns; j++) {
-                Position position = new Position(i, j);
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < columns; j++) {
+                Position position = new Position(i+1, j+1);
                 if (!isOccupied(position) && !isThreatened(position)) {
                     availablePositions.add(position);
                 }
@@ -38,8 +45,9 @@ public class Board implements Bounded, Cloneable {
         if (isNotWithinBounds(position)) {
             throw new OutOfBoardPosition();
         }
-        figure.setPosition(position);
-        placedFigures.add(figure);
+        positions[position.getRow()-1][position.getColumn()-1] = figure.toString().charAt(0);
+        cachedThreatenedPositions.clear();
+        cachedOccupiedPositions.clear();
     }
 
     public boolean canPlace(Figure figure, Position position) {
@@ -56,9 +64,9 @@ public class Board implements Bounded, Cloneable {
     @Override
     public String toString() {
         StringBuilder content = new StringBuilder();
-        for (int i = 1; i <= rows; i++) {
-            for (int j = 1; j <= columns; j++) {
-                Position position = new Position(i, j);
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < columns; j++) {
+                Position position = new Position(i+1, j+1);
                 String posSymbol = "#";
                 if (isOccupied(position)) {
                     posSymbol = findFigureTypeByPosition(position).toString();
@@ -70,19 +78,18 @@ public class Board implements Bounded, Cloneable {
         return content.toString();
     }
 
-    private FigureType findFigureTypeByPosition(Position position) {
-        for (Figure figure : placedFigures) {
-            if (figure.getPosition().equals(position)) {
-                return figure.getType();
-            }
-        }
-        throw new IllegalStateException("No figure at this position!");
+    private Figure findFigureTypeByPosition(Position position) {
+        char figureSymbol = positions[position.getRow()-1][position.getColumn()-1];
+        return Figure.fromString(new String(new char[]{figureSymbol}));
     }
 
     public Board clone() {
         try {
             Board board = (Board) super.clone();
-            board.placedFigures = new HashSet<>(placedFigures);
+            board.positions = new char[rows][columns];
+            for (int i = 0; i < rows; i++) {
+                System.arraycopy(positions[i], 0, board.positions[i], 0, columns);
+            }
             return board;
         } catch (CloneNotSupportedException e) {
             throw new InternalError();
@@ -98,31 +105,49 @@ public class Board implements Bounded, Cloneable {
 
         return columns == board.columns &&
                 rows == board.rows &&
-                placedFigures.equals(board.placedFigures);
+                Arrays.deepEquals(positions, board.positions);
     }
 
     @Override
     public int hashCode() {
         int result = rows;
         result = 31 * result + columns;
-        result = 31 * result + placedFigures.hashCode();
+        result = 31 * result + Arrays.deepHashCode(positions);
         return result;
     }
 
     protected Set<Position> getThreatenedPositions() {
-        HashSet<Position> threatenedPositions = new HashSet<>();
-        for (Figure figure : placedFigures) {
-            threatenedPositions.addAll(
-                    figure.getPositionsUnderThreatWhenPlacedOn(
-                            this, figure.getPosition()));
+        Set<Position> threatenedPositions = cachedThreatenedPositions.get();
+        if (threatenedPositions == null) {
+            threatenedPositions = new HashSet<>();
+            for (Position position : getOccupiedPositions()) {
+                char figureSymbol =
+                        positions[position.getRow() - 1][position.getColumn() - 1];
+                Figure figure = Figure.fromString(
+                        new String(new char[]{figureSymbol}));
+                threatenedPositions.addAll(
+                        figure.getPositionsUnderThreatWhenPlacedOn(
+                                this, position));
+            }
+            this.cachedThreatenedPositions =
+                    new SoftReference<>(threatenedPositions);
         }
         return threatenedPositions;
     }
 
-    protected Set<Position> getOccupiedPositions() {
-        Set<Position> occupiedPositions = new HashSet<>();
-        for (Figure figure : placedFigures) {
-            occupiedPositions.add(figure.getPosition());
+    protected List<Position> getOccupiedPositions() {
+        List<Position> occupiedPositions = cachedOccupiedPositions.get();
+        if (occupiedPositions == null) {
+            occupiedPositions = new ArrayList<>();
+            for (int i = 0; i < rows; i++) {
+                for (int j = 0; j < columns; j++) {
+                    if (positions[i][j] != 0) {
+                        occupiedPositions.add(new Position(i + 1, j + 1));
+                    }
+                }
+            }
+            this.cachedOccupiedPositions =
+                    new SoftReference<>(occupiedPositions);
         }
         return occupiedPositions;
     }

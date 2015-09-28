@@ -40,8 +40,8 @@ public class QueenFigureTest extends CommonFigureTest {
     }
 
     @Override
-    protected Figure createFigure() {
-        return new QueenFigure();
+    protected Figure getFigure() {
+        return Figure.QUEEN;
     }
 
     @Override

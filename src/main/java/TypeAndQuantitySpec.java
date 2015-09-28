@@ -12,7 +12,7 @@ public class TypeAndQuantitySpec {
         this.figureTypeAndQuantityAsString = figureTypeAndQuantityAsString;
     }
 
-    public List<FigureType> toList() {
+    public List<Figure> toList() {
         StringTokenizer tokenizer =
                 new StringTokenizer(
                         figureTypeAndQuantityAsString, SPEC_DELIMITERS);
@@ -21,8 +21,8 @@ public class TypeAndQuantitySpec {
         String typeString = figureTypeAndQuantityAsString.replace(qtyString, "");
 
         int quantity = valueOf(qtyString);
-        FigureType figureType = FigureType.fromString(typeString);
+        Figure figure = Figure.fromString(typeString);
 
-        return nCopies(quantity, figureType);
+        return nCopies(quantity, figure);
     }
 }

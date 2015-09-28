@@ -35,8 +35,8 @@ public class RookFigureTest extends CommonFigureTest {
     }
 
     @Override
-    protected Figure createFigure() {
-        return new RookFigure();
+    protected Figure getFigure() {
+        return Figure.ROOK;
     }
 
     @Override

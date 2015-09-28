@@ -1,5 +1,4 @@
-import java.util.LinkedList;
-import java.util.Queue;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -17,8 +16,8 @@ public class FigureSpec {
         this.figureSpecAsText = figureSpecAsText;
     }
 
-    public Queue<FigureType> toFigureSequence() {
-        Queue<FigureType> figureTypes = new LinkedList<>();
+    public Queue<Figure> toFigureSequence() {
+        Queue<Figure> figures = new LinkedList<>();
         if (!isEmptyOrNull(figureSpecAsText)) {
             String normalizedFigureSpec = normalizeFigureSpec(figureSpecAsText);
             validate(normalizedFigureSpec);
@@ -26,10 +25,21 @@ public class FigureSpec {
             for (String figureTypeAndQuantity : typeAndQtyTokens) {
                 TypeAndQuantitySpec spec =
                         new TypeAndQuantitySpec(figureTypeAndQuantity);
-                figureTypes.addAll(spec.toList());
+                figures.addAll(spec.toList());
             }
         }
-        return figureTypes;
+        return figures;
+    }
+
+    public Queue<Figure> toSortedFigureSequence() {
+        LinkedList<Figure> sortedSequence = new LinkedList<>(toFigureSequence());
+        Collections.sort(sortedSequence, new Comparator<Figure>() {
+            @Override
+            public int compare(Figure figure, Figure otherFigure) {
+                return otherFigure.getInfluenceOnBoard() - figure.getInfluenceOnBoard();
+            }
+        });
+        return sortedSequence;
     }
 
     private boolean isEmptyOrNull(String figureSpec) {
@@ -53,7 +63,11 @@ public class FigureSpec {
         return figureSpecAsText.replace(" ", "");
     }
 
-    public static Queue<FigureType> toFigureSequence(String figureSpecAsText) {
+    public static Queue<Figure> toFigureSequence(String figureSpecAsText) {
         return new FigureSpec(figureSpecAsText).toFigureSequence();
+    }
+
+    public static Queue<Figure> toSortedFigureSequence(String figureSpecAsText) {
+        return new FigureSpec(figureSpecAsText).toSortedFigureSequence();
     }
 }

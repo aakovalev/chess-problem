@@ -15,15 +15,15 @@ public class FigureSpecTest {
     @Test
     public void whenGivenFigureSpecAsStringConvertItToListOfFigureTypes()
             throws Exception {
-        assertThat(new FigureSpec("1K").toFigureSequence(), contains(FigureType.KING));
+        assertThat(new FigureSpec("1K").toFigureSequence(), contains(Figure.KING));
         assertThat(new FigureSpec("2B").toFigureSequence(),
-                contains(FigureType.BISHOP, FigureType.BISHOP));
+                contains(Figure.BISHOP, Figure.BISHOP));
     }
 
     @Test
     public void canTolerateToRedundantSpacesWithinFigureSpec() throws Exception {
         assertThat(new FigureSpec(" 1 K 2N").toFigureSequence(),
-                contains(FigureType.KING, FigureType.KNIGHT, FigureType.KNIGHT));
+                contains(Figure.KING, Figure.KNIGHT, Figure.KNIGHT));
     }
 
     @Test (expected = IllegalArgumentException.class)
@@ -36,6 +36,15 @@ public class FigureSpecTest {
     @Test
     public void canTolerateToLetterCase() throws Exception {
         assertThat(new FigureSpec("1k 1q").toFigureSequence(),
-                contains(FigureType.KING, FigureType.QUEEN));
+                contains(Figure.KING, Figure.QUEEN));
+    }
+
+    @Test
+    public void canSortFiguresByTheirInfluenceOnBoard() {
+        assertThat(
+                new FigureSpec("1K 1Q 1B 1R 1N").toSortedFigureSequence(),
+                contains(
+                        Figure.QUEEN, Figure.BISHOP, Figure.ROOK,
+                        Figure.KNIGHT, Figure.KING));
     }
 }

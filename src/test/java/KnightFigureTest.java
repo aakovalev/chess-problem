@@ -28,8 +28,8 @@ public class KnightFigureTest extends CommonFigureTest {
     }
 
     @Override
-    protected Figure createFigure() {
-        return new KnightFigure();
+    protected Figure getFigure() {
+        return Figure.KNIGHT;
     }
 
     @Override

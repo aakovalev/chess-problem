@@ -1,5 +1,7 @@
+import org.junit.Ignore;
 import org.junit.Test;
 
+import java.util.HashSet;
 import java.util.Queue;
 import java.util.Set;
 
@@ -47,6 +49,13 @@ public class ConfigurationSearcherTest {
                 + searcher.numberOfUniqueConfigurations(6, 9, "2K 1Q 1B 1R 1N"));
     }
 
+    @Ignore
+    public void eightQueens() throws Exception {
+        ConfigurationSearcher searcher = new ConfigurationSearcher(true);
+        System.out.println("Output :"
+                + searcher.numberOfUniqueConfigurations(8, 8, "8Q"));
+    }
+
     @Test(expected = IllegalArgumentException.class)
     public void dimensionOfTheBoardShouldBePositiveNumber() throws Exception {
         numberOfUniqueConfigurations(0, -1, "");
@@ -69,16 +78,16 @@ public class ConfigurationSearcherTest {
             throws Exception {
         ConfigurationSearcher searcher = spy(new ConfigurationSearcher());
         Board board = new Board(1, 3);
-        board.place(new KingFigure(), new Position(1, 1));
+        board.place(Figure.KING , new Position(1, 1));
 
         Set<Board> foundLayouts =
-                searcher.findLayouts(board, FigureSpec.toFigureSequence("1K"));
+                searcher.findLayouts(board, FigureSpec.toFigureSequence("1K"), new HashSet<Board>());
 
         Board expectedBoard = new Board(1, 3);
-        expectedBoard.place(new KingFigure(), new Position(1, 1));
-        expectedBoard.place(new KingFigure(), new Position(1, 3));
+        expectedBoard.place(Figure.KING, new Position(1, 1));
+        expectedBoard.place(Figure.KING, new Position(1, 3));
         assertThat(foundLayouts, containsInAnyOrder(expectedBoard));
-        verify(searcher, only()).findLayouts(any(Board.class), any(Queue.class));
+        verify(searcher, only()).findLayouts(any(Board.class), any(Queue.class), anySet());
     }
 
     private int numberOfUniqueConfigurations(int m, int n, String figureSpec) {

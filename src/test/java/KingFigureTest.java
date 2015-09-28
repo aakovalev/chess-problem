@@ -44,8 +44,8 @@ public class KingFigureTest extends CommonFigureTest {
     }
 
     @Override
-    protected Figure createFigure() {
-        return new KingFigure();
+    protected Figure getFigure() {
+        return Figure.KING;
     }
 
     @Override

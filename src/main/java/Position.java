@@ -1,10 +1,10 @@
 public class Position {
-    private final int row;
-    private final int column;
+    private final byte row;
+    private final byte column;
 
     public Position(int row, int column) {
-        this.row = row;
-        this.column = column;
+        this.row = (byte) row;
+        this.column = (byte) column;
     }
 
     @Override
@@ -14,10 +14,7 @@ public class Position {
 
         Position position = (Position) o;
 
-        if (column != position.column) return false;
-        if (row != position.row) return false;
-
-        return true;
+        return column == position.column && row == position.row;
     }
 
     @Override

@@ -9,11 +9,11 @@ public class TypeAndQuantitySpecTest {
             throws Exception {
         assertThat(
                 new TypeAndQuantitySpec("1K").toList(),
-                contains(FigureType.KING));
+                contains(Figure.KING));
 
         assertThat(
                 new TypeAndQuantitySpec("2K").toList(),
-                contains(FigureType.KING, FigureType.KING));
+                contains(Figure.KING, Figure.KING));
     }
 
     @Test (expected = IllegalArgumentException.class)

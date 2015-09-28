@@ -3,10 +3,6 @@ import java.util.*;
 public class ConfigurationSearcher {
     private boolean drawFoundLayouts;
 
-    public static void main(String[] args) {
-        ConfigurationSearcher searcher = new ConfigurationSearcher(true);
-    }
-
     public ConfigurationSearcher(boolean drawFoundLayouts) {
         this.drawFoundLayouts = drawFoundLayouts;
     }
@@ -29,40 +25,45 @@ public class ConfigurationSearcher {
             return m * n;
         }
 
-        if (figureCount(figureSpec) > m * n) {
-            return 0;
-        }
-
-        Set<Board> foundLayouts = findLayouts(
-                new Board(m, n), FigureSpec.toFigureSequence(figureSpec));
+        Set<List<Position>> foundLayouts = findLayouts(
+                new Board(m, n), FigureSpec.toSortedFigureSequence(figureSpec));
 
         if (drawFoundLayouts) {
-            draw(foundLayouts);
+            //draw(foundLayouts);
         }
 
         return foundLayouts.size();
     }
 
-    protected Set<Board> findLayouts(
-            Board board, Queue<FigureType> figuresToPlace) {
+    protected Set<List<Position>> findLayouts(
+            Board board, Queue<Figure> figuresToPlace) {
 
-        Set<Board> foundLayouts = new HashSet<>();
-        FigureType figureType = figuresToPlace.poll();
+        Set<List<Position>> foundLayouts = new HashSet<>();
         Set<Position> availablePositions = board.findPositionsToPlace();
+
+        if (figuresToPlace.size() > availablePositions.size()) {
+            return foundLayouts;
+        }
+
+        if (figuresToPlace.size() == 0) {
+            return foundLayouts;
+        }
+
+        Figure figure = figuresToPlace.poll();
+
         for (Position position : availablePositions) {
             Board boardClone = board.clone();
-            Figure figure = figureType.createFigure();
             if (boardClone.canPlace(figure, position)) {
                 boardClone.place(figure, position);
                 if (figuresToPlace.isEmpty()) {
-                    foundLayouts.add(boardClone);
+                    foundLayouts.add(boardClone.getOccupiedPositions());
                 } else {
-                    Set<Board> layouts = findLayouts(
-                            boardClone, new LinkedList<>(figuresToPlace));
-                    foundLayouts.addAll(layouts);
+                    foundLayouts.addAll(findLayouts(
+                            boardClone, new LinkedList<>(figuresToPlace)));
                 }
             }
         }
+
         return foundLayouts;
     }
 
