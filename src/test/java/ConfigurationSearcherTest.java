@@ -1,7 +1,7 @@
 import org.junit.Ignore;
 import org.junit.Test;
 
-import java.util.HashSet;
+import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
 
@@ -42,14 +42,14 @@ public class ConfigurationSearcherTest {
         assertThat(searcher.numberOfUniqueConfigurations(2, 2, "2B"), is(4));
     }
 
-    @Test
+    @Ignore
     public void twoKingsOneQueenOneBishopOneRookOneKnight() throws Exception {
         ConfigurationSearcher searcher = new ConfigurationSearcher(true);
         System.out.println("Output :"
                 + searcher.numberOfUniqueConfigurations(6, 9, "2K 1Q 1B 1R 1N"));
     }
 
-    @Ignore
+    @Test
     public void eightQueens() throws Exception {
         ConfigurationSearcher searcher = new ConfigurationSearcher(true);
         System.out.println("Output :"
@@ -80,14 +80,14 @@ public class ConfigurationSearcherTest {
         Board board = new Board(1, 3);
         board.place(Figure.KING , new Position(1, 1));
 
-        Set<Board> foundLayouts =
-                searcher.findLayouts(board, FigureSpec.toFigureSequence("1K"), new HashSet<Board>());
+        Set<Map<Position, Figure>> foundLayouts =
+                searcher.findLayouts(board, FigureSpec.toFigureSequence("1K"));
 
         Board expectedBoard = new Board(1, 3);
         expectedBoard.place(Figure.KING, new Position(1, 1));
         expectedBoard.place(Figure.KING, new Position(1, 3));
-        assertThat(foundLayouts, containsInAnyOrder(expectedBoard));
-        verify(searcher, only()).findLayouts(any(Board.class), any(Queue.class), anySet());
+        assertThat(foundLayouts, containsInAnyOrder(expectedBoard.toLayout()));
+        verify(searcher, only()).findLayouts(any(Board.class), any(Queue.class));
     }
 
     private int numberOfUniqueConfigurations(int m, int n, String figureSpec) {

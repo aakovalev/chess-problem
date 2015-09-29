@@ -1,4 +1,4 @@
-public class Position {
+public final class Position {
     private final byte row;
     private final byte column;
 
