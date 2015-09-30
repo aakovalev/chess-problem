@@ -143,7 +143,7 @@ public class Board implements Bounded, Cloneable {
                 || position.getColumn() > getMaxColumns();
     }
 
-    public Map<Position, Figure> toLayout() {
-        return Collections.unmodifiableMap(figuresByPositions);
+    public Layout toLayout() {
+        return new Layout(figuresByPositions);
     }
 }

@@ -1,12 +1,11 @@
 import org.junit.Ignore;
 import org.junit.Test;
 
-import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
 
-import static org.hamcrest.collection.IsIterableContainingInAnyOrder.containsInAnyOrder;
 import static org.hamcrest.core.Is.is;
+import static org.hamcrest.core.IsCollectionContaining.hasItem;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
@@ -42,14 +41,14 @@ public class ConfigurationSearcherTest {
         assertThat(searcher.numberOfUniqueConfigurations(2, 2, "2B"), is(4));
     }
 
-    @Ignore
+    @Test
     public void twoKingsOneQueenOneBishopOneRookOneKnight() throws Exception {
         ConfigurationSearcher searcher = new ConfigurationSearcher(true);
         System.out.println("Output :"
                 + searcher.numberOfUniqueConfigurations(6, 9, "2K 1Q 1B 1R 1N"));
     }
 
-    @Test
+    @Ignore
     public void eightQueens() throws Exception {
         ConfigurationSearcher searcher = new ConfigurationSearcher(true);
         System.out.println("Output :"
@@ -80,13 +79,13 @@ public class ConfigurationSearcherTest {
         Board board = new Board(1, 3);
         board.place(Figure.KING , new Position(1, 1));
 
-        Set<Map<Position, Figure>> foundLayouts =
+        Set<Layout> foundLayouts =
                 searcher.findLayouts(board, FigureSpec.toFigureSequence("1K"));
 
         Board expectedBoard = new Board(1, 3);
         expectedBoard.place(Figure.KING, new Position(1, 1));
         expectedBoard.place(Figure.KING, new Position(1, 3));
-        assertThat(foundLayouts, containsInAnyOrder(expectedBoard.toLayout()));
+        assertThat(foundLayouts, hasItem(expectedBoard.toLayout()));
         verify(searcher, only()).findLayouts(any(Board.class), any(Queue.class));
     }
 

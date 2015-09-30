@@ -25,7 +25,7 @@ public class ConfigurationSearcher {
             return m * n;
         }
 
-        Set<Map<Position, Figure>> foundLayouts = findLayouts(
+        Set<Layout> foundLayouts = findLayouts(
                 new Board(m, n), FigureSpec.toSortedFigureSequence(figureSpec));
 
         if (drawFoundLayouts) {
@@ -35,10 +35,10 @@ public class ConfigurationSearcher {
         return foundLayouts.size();
     }
 
-    protected Set<Map<Position, Figure>> findLayouts(
+    protected Set<Layout> findLayouts(
             Board board, Queue<Figure> figuresToPlace) {
 
-        Set<Map<Position, Figure>> foundLayouts = new HashSet<>();
+        Set<Layout> foundLayouts = new HashSet<>();
         Set<Position> availablePositions = board.findPositionsToPlace();
 
         if (figuresToPlace.size() > availablePositions.size()) {
