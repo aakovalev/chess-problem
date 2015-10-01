@@ -8,22 +8,22 @@ public class BishopFigureTest extends CommonFigureTest {
     @Before
     public void setUp() throws Exception {
         board = new Board(3, 3);
-        middle = new Position(2, 2);
+        middle = Position.create(2, 2);
     }
 
     @Test
     public void shouldTellPositionsUnderThreat() throws Exception {
         verifyPositionsUnderThreat(getLeftUpperCorner(),
-                new Position(2, 2), new Position(3, 3));
+                Position.create(2, 2), Position.create(3, 3));
         verifyPositionsUnderThreat(getRightUpperCorner(),
-                new Position(2, 2), new Position(3, 1));
+                Position.create(2, 2), Position.create(3, 1));
         verifyPositionsUnderThreat(getRightDownCorner(),
-                new Position(2, 2), new Position(1, 1));
+                Position.create(2, 2), Position.create(1, 1));
         verifyPositionsUnderThreat(getLeftDownCorner(),
-                new Position(2, 2), new Position(1, 3));
+                Position.create(2, 2), Position.create(1, 3));
         verifyPositionsUnderThreat(middle,
-                new Position(1, 1), new Position(1, 3),
-                new Position(3, 1), new Position(3, 3));
+                Position.create(1, 1), Position.create(1, 3),
+                Position.create(3, 1), Position.create(3, 3));
     }
 
     @Override

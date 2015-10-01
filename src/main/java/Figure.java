@@ -12,35 +12,35 @@ public enum Figure {
             int column = ownPosition.getColumn();
 
             if (row > 1) {
-                positionsUnderThreat.add(new Position(row - 1, column));
+                positionsUnderThreat.add(Position.create(row - 1, column));
             }
 
             if (row < board.getMaxRows()) {
-                positionsUnderThreat.add(new Position(row + 1, column));
+                positionsUnderThreat.add(Position.create(row + 1, column));
             }
 
             if (column > 1) {
-                positionsUnderThreat.add(new Position(row, column - 1));
+                positionsUnderThreat.add(Position.create(row, column - 1));
             }
 
             if (column < board.getMaxColumns()) {
-                positionsUnderThreat.add(new Position(row, column + 1));
+                positionsUnderThreat.add(Position.create(row, column + 1));
             }
 
             if (row > 1 && column > 1) {
-                positionsUnderThreat.add(new Position(row - 1, column - 1));
+                positionsUnderThreat.add(Position.create(row - 1, column - 1));
             }
 
             if (row < board.getMaxRows() && column < board.getMaxColumns()) {
-                positionsUnderThreat.add(new Position(row + 1, column + 1));
+                positionsUnderThreat.add(Position.create(row + 1, column + 1));
             }
 
             if (row > 1 && column < board.getMaxColumns()) {
-                positionsUnderThreat.add(new Position(row - 1, column + 1));
+                positionsUnderThreat.add(Position.create(row - 1, column + 1));
             }
 
             if (row < board.getMaxRows() && column > 1) {
-                positionsUnderThreat.add(new Position(row + 1, column - 1));
+                positionsUnderThreat.add(Position.create(row + 1, column - 1));
             }
 
             return Collections.unmodifiableSet(positionsUnderThreat);
@@ -158,35 +158,35 @@ public enum Figure {
             int column = ownPosition.getColumn();
 
             if (row + 1 <= board.getMaxRows() && column + 2 <= board.getMaxColumns()) {
-                positionsUnderThreat.add(new Position(row + 1, column + 2));
+                positionsUnderThreat.add(Position.create(row + 1, column + 2));
             }
 
             if (row + 2 <= board.getMaxRows() && column + 1 <= board.getMaxColumns()) {
-                positionsUnderThreat.add(new Position(row + 2, column + 1));
+                positionsUnderThreat.add(Position.create(row + 2, column + 1));
             }
 
             if (row + 2 <= board.getMaxRows() && column > 1) {
-                positionsUnderThreat.add(new Position(row + 2, column - 1));
+                positionsUnderThreat.add(Position.create(row + 2, column - 1));
             }
 
             if (row + 1 <= board.getMaxRows() && column > 2) {
-                positionsUnderThreat.add(new Position(row + 1, column - 2));
+                positionsUnderThreat.add(Position.create(row + 1, column - 2));
             }
 
             if (row > 1 && column > 2) {
-                positionsUnderThreat.add(new Position(row - 1, column - 2));
+                positionsUnderThreat.add(Position.create(row - 1, column - 2));
             }
 
             if (row > 2 && column > 1) {
-                positionsUnderThreat.add(new Position(row - 2, column - 1));
+                positionsUnderThreat.add(Position.create(row - 2, column - 1));
             }
 
             if (row > 1 && column + 2 <= board.getMaxColumns()) {
-                positionsUnderThreat.add(new Position(row - 1, column + 2));
+                positionsUnderThreat.add(Position.create(row - 1, column + 2));
             }
 
             if (row > 2 && column + 1 <= board.getMaxColumns()) {
-                positionsUnderThreat.add(new Position(row - 2, column + 1));
+                positionsUnderThreat.add(Position.create(row - 2, column + 1));
             }
 
             return positionsUnderThreat;
@@ -219,7 +219,7 @@ public enum Figure {
                 column + shiftColumn <= board.getMaxColumns() &&
                 column + shiftColumn >= 1) {
 
-            diagonalPositions.add(new Position
+            diagonalPositions.add(Position.create
                     (row + shiftRow, column + shiftColumn));
             shiftRow += rowDelta;
             shiftColumn += columnDelta;
@@ -238,7 +238,7 @@ public enum Figure {
             if (j == column) {
                 continue;
             }
-            rowPositions.add(new Position(row, j));
+            rowPositions.add(Position.create(row, j));
         }
         return rowPositions;
     }
@@ -254,7 +254,7 @@ public enum Figure {
             if (i == row) {
                 continue;
             }
-            columnPositions.add(new Position(i, column));
+            columnPositions.add(Position.create(i, column));
         }
         return columnPositions;
     }

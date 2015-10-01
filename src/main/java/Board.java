@@ -19,7 +19,7 @@ public class Board implements Bounded, Cloneable {
         Set<Position> availablePositions = new HashSet<>();
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < columns; j++) {
-                Position position = new Position(i+1, j+1);
+                Position position = Position.create(i + 1, j + 1);
                 if (!isOccupied(position) && !isThreatened(position)) {
                     availablePositions.add(position);
                 }
@@ -62,7 +62,7 @@ public class Board implements Bounded, Cloneable {
         StringBuilder content = new StringBuilder();
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < columns; j++) {
-                Position position = new Position(i+1, j+1);
+                Position position = Position.create(i + 1, j + 1);
                 String posSymbol = "#";
                 if (isOccupied(position)) {
                     posSymbol = findFigureTypeByPosition(position).toString();

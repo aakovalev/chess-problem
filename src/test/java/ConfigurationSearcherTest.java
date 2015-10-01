@@ -77,14 +77,14 @@ public class ConfigurationSearcherTest {
             throws Exception {
         ConfigurationSearcher searcher = spy(new ConfigurationSearcher());
         Board board = new Board(1, 3);
-        board.place(Figure.KING , new Position(1, 1));
+        board.place(Figure.KING , Position.create(1, 1));
 
         Set<Layout> foundLayouts =
                 searcher.findLayouts(board, FigureSpec.toFigureSequence("1K"));
 
         Board expectedBoard = new Board(1, 3);
-        expectedBoard.place(Figure.KING, new Position(1, 1));
-        expectedBoard.place(Figure.KING, new Position(1, 3));
+        expectedBoard.place(Figure.KING, Position.create(1, 1));
+        expectedBoard.place(Figure.KING, Position.create(1, 3));
         assertThat(foundLayouts, hasItem(expectedBoard.toLayout()));
         verify(searcher, only()).findLayouts(any(Board.class), any(Queue.class));
     }

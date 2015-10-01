@@ -20,18 +20,18 @@ public abstract class CommonFigureTest {
     }
 
     protected Position getLeftUpperCorner() {
-        return new Position(1, 1);
+        return Position.create(1, 1);
     }
 
     protected Position getRightUpperCorner() {
-        return new Position(1, getBoard().getMaxColumns());
+        return Position.create(1, getBoard().getMaxColumns());
     }
 
     protected Position getRightDownCorner() {
-        return new Position(getBoard().getMaxRows(), getBoard().getMaxColumns());
+        return Position.create(getBoard().getMaxRows(), getBoard().getMaxColumns());
     }
 
     protected Position getLeftDownCorner() {
-        return new Position(getBoard().getMaxRows(), 1);
+        return Position.create(getBoard().getMaxRows(), 1);
     }
 }

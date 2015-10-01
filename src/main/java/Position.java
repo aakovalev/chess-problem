@@ -1,27 +1,31 @@
+import java.util.HashMap;
+import java.util.Map;
+
 public final class Position {
     private final byte row;
     private final byte column;
+    private final static Map<String, Position> positionsByKeys = new HashMap<>();
 
-    public Position(int row, int column) {
+    private Position(int row, int column) {
         this.row = (byte) row;
         this.column = (byte) column;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Position)) return false;
-
-        Position position = (Position) o;
-
-        return column == position.column && row == position.row;
+    public static Position create(int row, int column) {
+        String key = toKey(row, column);
+        Position position;
+        if (positionsByKeys.containsKey(key)) {
+            position = positionsByKeys.get(key);
+        }
+        else {
+            position = new Position(row, column);
+            positionsByKeys.put(key, position);
+        }
+        return position;
     }
 
-    @Override
-    public int hashCode() {
-        int result = row;
-        result = 31 * result + column;
-        return result;
+    private static String toKey(int row, int column) {
+        return row + ", " + column;
     }
 
     public int getRow() {

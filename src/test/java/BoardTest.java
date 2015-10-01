@@ -20,7 +20,7 @@ public class BoardTest {
     public void whenFigureAddedToBoardItsPositionMarkedOccupied()
             throws Exception {
         Board board = new Board(2, 3);
-        Position thePosition = new Position(1, 1);
+        Position thePosition = Position.create(1, 1);
 
         board.place(Figure.KING, thePosition);
 
@@ -34,30 +34,30 @@ public class BoardTest {
             throws Exception {
 
         Board board = new Board(5, 5);
-        Position position = new Position(3, 3);
+        Position position = Position.create(3, 3);
 
         board.place(Figure.KING, position);
 
         Set<Position> threatenedPositions = board.getThreatenedPositions();
         assertThat(threatenedPositions, hasSize(8));
         assertThat(threatenedPositions, hasItems(
-                new Position(2, 2), new Position(2, 3), new Position(2, 4),
-                new Position(3, 4), new Position(4, 4), new Position(4, 3),
-                new Position(4, 2), new Position(3, 2)));
+                Position.create(2, 2), Position.create(2, 3), Position.create(2, 4),
+                Position.create(3, 4), Position.create(4, 4), Position.create(4, 3),
+                Position.create(4, 2), Position.create(3, 2)));
     }
 
     @Test
     public void canFindNonThreatenedAndOccupiedPositions() throws Exception {
         Board board = new Board(3, 3);
-        Position position = new Position(1, 1);
+        Position position = Position.create(1, 1);
 
         board.place(Figure.KING, position);
 
         Set<Position> availablePositions = board.findPositionsToPlace();
         assertThat(availablePositions, hasSize(5));
         assertThat(availablePositions, hasItems(
-                new Position(3, 1), new Position(3, 2), new Position(3, 3),
-                new Position(1, 3), new Position(2, 3)));
+                Position.create(3, 1), Position.create(3, 2), Position.create(3, 3),
+                Position.create(1, 3), Position.create(2, 3)));
     }
 
     @Test
@@ -67,8 +67,8 @@ public class BoardTest {
         Board oneBoard = new Board(5, 5);
         Board anotherBoard = new Board(5, 5);
 
-        Position onePosition = new Position(1, 1);
-        Position anotherPosition = new Position(3, 3);
+        Position onePosition = Position.create(1, 1);
+        Position anotherPosition = Position.create(3, 3);
 
         oneBoard.place(Figure.KING, onePosition);
         oneBoard.place(Figure.KING, anotherPosition);
@@ -92,8 +92,8 @@ public class BoardTest {
         Board oneBoard = new Board(5, 5);
         Board anotherBoard = new Board(5, 5);
 
-        oneBoard.place(Figure.KING, new Position(3, 3));
-        anotherBoard.place(Figure.KING, new Position(1, 1));
+        oneBoard.place(Figure.KING, Position.create(3, 3));
+        anotherBoard.place(Figure.KING, Position.create(1, 1));
 
         assertNotEquals(oneBoard, anotherBoard);
     }
@@ -102,10 +102,10 @@ public class BoardTest {
     public void shouldTellIfCanPlaceFigureToBoardWithoutThreateningOthers()
             throws Exception {
         Board board = new Board(1, 3);
-        board.place(Figure.KING, new Position(1, 1));
+        board.place(Figure.KING, Position.create(1, 1));
 
-        assertTrue(board.canPlace(Figure.KING, new Position(1, 3)));
-        assertFalse(board.canPlace(Figure.KING, new Position(1, 2)));
+        assertTrue(board.canPlace(Figure.KING, Position.create(1, 3)));
+        assertFalse(board.canPlace(Figure.KING, Position.create(1, 2)));
     }
 
     @Test(expected = OutOfBoardPosition.class)
@@ -118,7 +118,7 @@ public class BoardTest {
     @Test
     public void cloneInstanceIsEqualOriginalInstance() throws Exception {
         Board originalBoard = new Board(2, 3);
-        originalBoard.place(Figure.KING, new Position(2, 2));
+        originalBoard.place(Figure.KING, Position.create(2, 2));
 
         Board clonedBoard = originalBoard.clone();
 
@@ -127,6 +127,6 @@ public class BoardTest {
     }
 
     private Position getOutOfBoardPosition(Board board) {
-        return new Position(board.getMaxRows() + 1, board.getMaxColumns() + 1);
+        return Position.create(board.getMaxRows() + 1, board.getMaxColumns() + 1);
     }
 }
