@@ -41,6 +41,7 @@ public class ConfigurationSearcherTest {
         assertThat(searcher.numberOfUniqueConfigurations(2, 2, "2B"), is(4));
     }
 
+    @Ignore
     @Test
     public void twoKingsOneQueenOneBishopOneRookOneKnight() throws Exception {
         ConfigurationSearcher searcher = new ConfigurationSearcher(true);
@@ -48,7 +49,7 @@ public class ConfigurationSearcherTest {
                 + searcher.numberOfUniqueConfigurations(6, 9, "2K 1Q 1B 1R 1N"));
     }
 
-    @Ignore
+    @Test
     public void eightQueens() throws Exception {
         ConfigurationSearcher searcher = new ConfigurationSearcher(true);
         System.out.println("Output :"
@@ -79,13 +80,13 @@ public class ConfigurationSearcherTest {
         Board board = new Board(1, 3);
         board.place(Figure.KING , Position.create(1, 1));
 
-        Set<Layout> foundLayouts =
+        Set<String> foundLayouts =
                 searcher.findLayouts(board, FigureSpec.toFigureSequence("1K"));
 
         Board expectedBoard = new Board(1, 3);
         expectedBoard.place(Figure.KING, Position.create(1, 1));
         expectedBoard.place(Figure.KING, Position.create(1, 3));
-        assertThat(foundLayouts, hasItem(expectedBoard.toLayout()));
+        assertThat(foundLayouts, hasItem("K1K"));
         verify(searcher, only()).findLayouts(any(Board.class), any(Queue.class));
     }
 

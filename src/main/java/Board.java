@@ -1,5 +1,7 @@
-import java.lang.ref.SoftReference;
-import java.util.*;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 public class Board implements Bounded, Cloneable {
     private final byte rows;
@@ -7,8 +9,7 @@ public class Board implements Bounded, Cloneable {
 
     private Map<Position, Figure> figuresByPositions = new HashMap<>();
 
-    private SoftReference<Set<Position>> cachedThreatenedPositions =
-            new SoftReference<Set<Position>>(new HashSet<Position>());
+    private Set<Position> threatenedPositions = new HashSet<>();
 
     public Board(int rows, int columns) {
         this.rows = (byte) rows;
@@ -17,10 +18,10 @@ public class Board implements Bounded, Cloneable {
 
     public Set<Position> findPositionsToPlace() {
         Set<Position> availablePositions = new HashSet<>();
-        for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < columns; j++) {
-                Position position = Position.create(i + 1, j + 1);
-                if (!isOccupied(position) && !isThreatened(position)) {
+        for (int i = 1; i <= rows; i++) {
+            for (int j = 1; j <= columns; j++) {
+                Position position = Position.create(i, j);
+                if (!isThreatened(position) && !isOccupied(position)) {
                     availablePositions.add(position);
                 }
             }
@@ -43,7 +44,7 @@ public class Board implements Bounded, Cloneable {
             throw new OutOfBoardPosition();
         }
         figuresByPositions.put(position, figure);
-        cachedThreatenedPositions.clear();
+        threatenedPositions.addAll(figure.getPositionsUnderThreatWhenPlacedOn(this, position));
     }
 
     public boolean canPlace(Figure figure, Position position) {
@@ -60,9 +61,9 @@ public class Board implements Bounded, Cloneable {
     @Override
     public String toString() {
         StringBuilder content = new StringBuilder();
-        for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < columns; j++) {
-                Position position = Position.create(i + 1, j + 1);
+        for (int i = 1; i <= rows; i++) {
+            for (int j = 1; j <= columns; j++) {
+                Position position = Position.create(i, j);
                 String posSymbol = "#";
                 if (isOccupied(position)) {
                     posSymbol = findFigureTypeByPosition(position).toString();
@@ -81,7 +82,8 @@ public class Board implements Bounded, Cloneable {
     public Board clone() {
         try {
             Board board = (Board) super.clone();
-            board.figuresByPositions = new HashMap<>(figuresByPositions);
+            board.figuresByPositions = (Map<Position, Figure>) ((HashMap<Position, Figure>) figuresByPositions).clone();
+            board.threatenedPositions = (Set<Position>) ((HashSet<Position>) threatenedPositions).clone();
             return board;
         } catch (CloneNotSupportedException e) {
             throw new InternalError();
@@ -95,9 +97,7 @@ public class Board implements Bounded, Cloneable {
 
         Board board = (Board) o;
 
-        return columns == board.columns &&
-                rows == board.rows &&
-                figuresByPositions.equals(board.figuresByPositions);
+        return toFEN().equals(board.toFEN());
     }
 
     @Override
@@ -109,18 +109,6 @@ public class Board implements Bounded, Cloneable {
     }
 
     protected Set<Position> getThreatenedPositions() {
-        Set<Position> threatenedPositions = cachedThreatenedPositions.get();
-        if (threatenedPositions == null) {
-            threatenedPositions = new HashSet<>();
-            for (Position position : getOccupiedPositions()) {
-                Figure figure = figuresByPositions.get(position);
-                threatenedPositions.addAll(
-                        figure.getPositionsUnderThreatWhenPlacedOn(
-                                this, position));
-            }
-            this.cachedThreatenedPositions =
-                    new SoftReference<>(threatenedPositions);
-        }
         return threatenedPositions;
     }
 
@@ -145,5 +133,35 @@ public class Board implements Bounded, Cloneable {
 
     public Layout toLayout() {
         return new Layout(figuresByPositions);
+    }
+
+    public String toFEN() {
+        StringBuilder feNotation = new StringBuilder();
+        for (int i = 1; i <= rows; i++) {
+            int numberOfEmptyChecks = 0;
+
+            for (int j = 1; j <= columns; j++) {
+                Position position = Position.create(i, j);
+                if (isOccupied(position)) {
+                    if (numberOfEmptyChecks > 0) {
+                        feNotation.append(numberOfEmptyChecks);
+                        numberOfEmptyChecks = 0;
+                    }
+                    feNotation.append(findFigureTypeByPosition(position));
+                }
+                else {
+                    numberOfEmptyChecks++;
+                }
+            }
+
+            if (numberOfEmptyChecks > 0) {
+                feNotation.append(numberOfEmptyChecks);
+            }
+
+            if (i < rows) {
+                feNotation.append("/");
+            }
+        }
+        return feNotation.toString();
     }
 }

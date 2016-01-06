@@ -1,6 +1,4 @@
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 public enum Figure {
     KING {
@@ -60,7 +58,7 @@ public enum Figure {
     QUEEN {
         @Override
         Set<Position> getPositionsUnderThreatWhenPlacedOn(Bounded board, Position ownPosition) {
-            Set<Position> positionsUnderThreat = new HashSet<>();
+            Collection<Position> positionsUnderThreat = new ArrayList<>();
 
             positionsUnderThreat.addAll(
                     getThreatenedPositionsInDiagonalPart(board, ownPosition, 1, 1));
@@ -80,7 +78,7 @@ public enum Figure {
             positionsUnderThreat.addAll(
                     getThreatenedPositionsInRow(board, ownPosition));
 
-            return positionsUnderThreat;
+            return new HashSet<>(positionsUnderThreat);
         }
 
         @Override
@@ -153,7 +151,7 @@ public enum Figure {
     KNIGHT {
         @Override
         Set<Position> getPositionsUnderThreatWhenPlacedOn(Bounded board, Position ownPosition) {
-            HashSet<Position> positionsUnderThreat = new HashSet<>();
+            Set<Position> positionsUnderThreat = new HashSet<>();
             int row = ownPosition.getRow();
             int column = ownPosition.getColumn();
 
@@ -208,7 +206,7 @@ public enum Figure {
 
     protected Set<Position> getThreatenedPositionsInDiagonalPart(
             Bounded board, Position ownPosition, int rowDelta, int columnDelta) {
-        Set<Position> diagonalPositions = new HashSet<>();
+        Collection<Position> diagonalPositions = new ArrayList<>();
         int row = ownPosition.getRow();
         int column = ownPosition.getColumn();
 
@@ -224,13 +222,13 @@ public enum Figure {
             shiftRow += rowDelta;
             shiftColumn += columnDelta;
         }
-        return diagonalPositions;
+        return new HashSet<>(diagonalPositions);
     }
 
     protected Set<Position> getThreatenedPositionsInRow(
             Bounded board, Position ownPosition) {
 
-        Set<Position> rowPositions = new HashSet<>();
+        Set<Position> rowPositions = new HashSet<>(board.getMaxColumns());
         int row = ownPosition.getRow();
         int column = ownPosition.getColumn();
 
@@ -246,9 +244,9 @@ public enum Figure {
     protected Set<Position> getThreatenedPositionsInColumn(
             Bounded board, Position ownPosition) {
 
-        Set<Position> columnPositions = new HashSet<>();
         int row = ownPosition.getRow();
         int column = ownPosition.getColumn();
+        Set<Position> columnPositions = new HashSet<>(board.getMaxRows());
 
         for (int i = 1; i <= board.getMaxRows(); i++) {
             if (i == row) {

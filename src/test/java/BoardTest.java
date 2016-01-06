@@ -126,6 +126,18 @@ public class BoardTest {
         assertEquals(clonedBoard, originalBoard);
     }
 
+    @Test
+    public void toFEN() {
+        Board emptyBoard = new Board(3, 5);
+        assertEquals("5/5/5", emptyBoard.toFEN());
+
+        Board arbitraryBoard = new Board(3, 3);
+        arbitraryBoard.place(Figure.KING, Position.create(1, 1));
+        arbitraryBoard.place(Figure.KING, Position.create(1, 3));
+        arbitraryBoard.place(Figure.ROOK, Position.create(3, 2));
+        assertEquals("K1K/3/1R1", arbitraryBoard.toFEN());
+    }
+
     private Position getOutOfBoardPosition(Board board) {
         return Position.create(board.getMaxRows() + 1, board.getMaxColumns() + 1);
     }

@@ -25,7 +25,7 @@ public class ConfigurationSearcher {
             return m * n;
         }
 
-        Set<Layout> foundLayouts = findLayouts(
+        Set<String> foundLayouts = findLayouts(
                 new Board(m, n), FigureSpec.toSortedFigureSequence(figureSpec));
 
         if (drawFoundLayouts) {
@@ -35,10 +35,10 @@ public class ConfigurationSearcher {
         return foundLayouts.size();
     }
 
-    protected Set<Layout> findLayouts(
+    protected Set<String> findLayouts(
             Board board, Queue<Figure> figuresToPlace) {
 
-        Set<Layout> foundLayouts = new HashSet<>();
+        Set<String> foundLayouts = new HashSet<>();
         Set<Position> availablePositions = board.findPositionsToPlace();
 
         if (figuresToPlace.size() > availablePositions.size()) {
@@ -52,11 +52,11 @@ public class ConfigurationSearcher {
         Figure figure = figuresToPlace.poll();
 
         for (Position position : availablePositions) {
-            Board boardClone = board.clone();
-            if (boardClone.canPlace(figure, position)) {
+            if (board.canPlace(figure, position)) {
+                Board boardClone = board.clone();
                 boardClone.place(figure, position);
                 if (figuresToPlace.isEmpty()) {
-                    foundLayouts.add(boardClone.toLayout());
+                    foundLayouts.add(boardClone.toFEN());
                 } else {
                     foundLayouts.addAll(findLayouts(
                             boardClone, new LinkedList<>(figuresToPlace)));

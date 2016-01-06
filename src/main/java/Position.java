@@ -13,15 +13,28 @@ public final class Position {
 
     public static Position create(int row, int column) {
         String key = toKey(row, column);
-        Position position;
-        if (positionsByKeys.containsKey(key)) {
-            position = positionsByKeys.get(key);
-        }
-        else {
+        Position position = positionsByKeys.get(key);
+        if (position == null) {
             position = new Position(row, column);
             positionsByKeys.put(key, position);
         }
         return position;
+    }
+
+    @Override
+    public int hashCode() {
+        return toKey(row, column).hashCode();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Position position = (Position) o;
+
+        if (row != position.row) return false;
+        return column == position.column;
     }
 
     private static String toKey(int row, int column) {
