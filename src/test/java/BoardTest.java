@@ -127,15 +127,15 @@ public class BoardTest {
     }
 
     @Test
-    public void toFEN() {
+    public void canRepresentAsFENLayout() {
         Board emptyBoard = new Board(3, 5);
-        assertEquals("5/5/5", emptyBoard.toFEN());
+        assertEquals("5/5/5", emptyBoard.toFENLayout());
 
-        Board arbitraryBoard = new Board(3, 3);
+        Board arbitraryBoard = new Board(3, 4);
         arbitraryBoard.place(Figure.KING, Position.create(1, 1));
         arbitraryBoard.place(Figure.KING, Position.create(1, 3));
         arbitraryBoard.place(Figure.ROOK, Position.create(3, 2));
-        assertEquals("K1K/3/1R1", arbitraryBoard.toFEN());
+        assertEquals("K1K1/4/1R2", arbitraryBoard.toFENLayout());
     }
 
     private Position getOutOfBoardPosition(Board board) {

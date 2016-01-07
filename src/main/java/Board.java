@@ -97,15 +97,12 @@ public class Board implements Bounded, Cloneable {
 
         Board board = (Board) o;
 
-        return toFEN().equals(board.toFEN());
+        return toFENLayout().equals(board.toFENLayout());
     }
 
     @Override
     public int hashCode() {
-        int result = rows;
-        result = 31 * result + columns;
-        result = 31 * result + figuresByPositions.hashCode();
-        return result;
+        return toFENLayout().hashCode();
     }
 
     protected Set<Position> getThreatenedPositions() {
@@ -131,11 +128,13 @@ public class Board implements Bounded, Cloneable {
                 || position.getColumn() > getMaxColumns();
     }
 
-    public Layout toLayout() {
-        return new Layout(figuresByPositions);
-    }
-
-    public String toFEN() {
+    /**
+     * Represents board as string in Forsyth-Edwards notation
+     * More details: https://en.wikipedia.org/wiki/Forsyth–Edwards_Notation
+     *
+     * @return string that represents board in Forsyth-Edwards notation
+     */
+    public String toFENLayout() {
         StringBuilder feNotation = new StringBuilder();
         for (int i = 1; i <= rows; i++) {
             int numberOfEmptyChecks = 0;

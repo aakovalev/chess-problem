@@ -29,7 +29,7 @@ public class ConfigurationSearcher {
                 new Board(m, n), FigureSpec.toSortedFigureSequence(figureSpec));
 
         if (drawFoundLayouts) {
-            //draw(foundLayouts);
+            draw(foundLayouts);
         }
 
         return foundLayouts.size();
@@ -56,7 +56,7 @@ public class ConfigurationSearcher {
                 Board boardClone = board.clone();
                 boardClone.place(figure, position);
                 if (figuresToPlace.isEmpty()) {
-                    foundLayouts.add(boardClone.toFEN());
+                    foundLayouts.add(boardClone.toFENLayout());
                 } else {
                     foundLayouts.addAll(findLayouts(
                             boardClone, new LinkedList<>(figuresToPlace)));
@@ -67,9 +67,9 @@ public class ConfigurationSearcher {
         return foundLayouts;
     }
 
-    private void draw(Set<Board> foundLayouts) {
-        for (Board board : foundLayouts) {
-            System.out.println(board.toString());
+    private void draw(Set<String> fenLayouts) {
+        for (String layout : fenLayouts) {
+            System.out.println(layout);
         }
     }
 

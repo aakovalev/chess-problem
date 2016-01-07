@@ -5,7 +5,6 @@ import java.util.Set;
 
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsCollectionContaining.hasItem;
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
@@ -43,14 +42,14 @@ public class ConfigurationSearcherTest {
 
     @Test
     public void twoKingsOneQueenOneBishopOneRookOneKnight() throws Exception {
-        ConfigurationSearcher searcher = new ConfigurationSearcher(true);
-        assertEquals(20136752, searcher.numberOfUniqueConfigurations(6, 9, "2K 1Q 1B 1R 1N"));
+        assertThat(
+                numberOfUniqueConfigurations(6, 9, "2K 1Q 1B 1R 1N"),
+                is(20136752));
     }
 
     @Test
     public void eightQueens() throws Exception {
-        ConfigurationSearcher searcher = new ConfigurationSearcher(true);
-        assertEquals(92, searcher.numberOfUniqueConfigurations(8, 8, "8Q"));
+        assertThat(numberOfUniqueConfigurations(8, 8, "8Q"), is(92));
     }
 
     @Test(expected = IllegalArgumentException.class)
