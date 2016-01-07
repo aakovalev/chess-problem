@@ -2,7 +2,7 @@
 
 This is a programming kata/dojo. The developed class ConfigurationSearcher 
 can be used to solve chess puzzles (i.e. N-Queens problem and its generalized 
-version of placing arbitrary chess pieces on arbitrary board).
+version of placing arbitrary chess pieces at arbitrary board).
 The developed solution might be a subject of further optimizations.
 I have written it with a goal just to practice TDD approach.
 
