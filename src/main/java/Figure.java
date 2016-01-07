@@ -1,3 +1,5 @@
+import optimizations.KeyBuilder;
+
 import java.util.*;
 
 public enum Figure {
@@ -58,7 +60,7 @@ public enum Figure {
     QUEEN {
         @Override
         Set<Position> getPositionsUnderThreatWhenPlacedOn(Bounded board, Position ownPosition) {
-            Collection<Position> positionsUnderThreat = new ArrayList<>();
+            Set<Position> positionsUnderThreat = new HashSet<>();
 
             positionsUnderThreat.addAll(
                     getThreatenedPositionsInDiagonalPart(board, ownPosition, 1, 1));
@@ -78,7 +80,7 @@ public enum Figure {
             positionsUnderThreat.addAll(
                     getThreatenedPositionsInRow(board, ownPosition));
 
-            return new HashSet<>(positionsUnderThreat);
+            return positionsUnderThreat;
         }
 
         @Override
@@ -95,7 +97,7 @@ public enum Figure {
     BISHOP {
         @Override
         Set<Position> getPositionsUnderThreatWhenPlacedOn(Bounded board, Position ownPosition) {
-            HashSet<Position> positionsUnderThreat = new HashSet<>();
+            Set<Position> positionsUnderThreat = new HashSet<>();
 
             positionsUnderThreat.addAll(
                     getThreatenedPositionsInDiagonalPart(board, ownPosition, 1, 1));
@@ -204,39 +206,75 @@ public enum Figure {
     abstract Set<Position> getPositionsUnderThreatWhenPlacedOn(
             Bounded board, Position ownPosition);
 
+    // cache of calculated positions to speed up the search
+    private final static Map<String, Set<Position>>
+            cacheOfAlreadyCalculatedPositions = new HashMap<>();
+
     protected Set<Position> getThreatenedPositionsInDiagonalPart(
             Bounded board, Position ownPosition, int rowDelta, int columnDelta) {
-        Collection<Position> diagonalPositions = new ArrayList<>();
-        int row = ownPosition.getRow();
-        int column = ownPosition.getColumn();
 
-        int shiftRow = rowDelta;
-        int shiftColumn = columnDelta;
-        while (row + shiftRow <= board.getMaxRows() &&
-                row + shiftRow >= 1 &&
-                column + shiftColumn <= board.getMaxColumns() &&
-                column + shiftColumn >= 1) {
+        String key = new KeyBuilder()
+                .appendKeyPart("diagonalPositions")
+                .appendKeyPart(board.getMaxRows())
+                .appendKeyPart(board.getMaxColumns())
+                .appendKeyPart(ownPosition.getRow())
+                .appendKeyPart(ownPosition.getColumn())
+                .appendKeyPart(rowDelta)
+                .appendKeyPart(columnDelta).makeKey();
 
-            diagonalPositions.add(Position.create
-                    (row + shiftRow, column + shiftColumn));
-            shiftRow += rowDelta;
-            shiftColumn += columnDelta;
+        Set<Position> diagonalPositions = cacheOfAlreadyCalculatedPositions.get(key);
+
+        if (diagonalPositions == null) {
+            diagonalPositions = new HashSet<>();
+            int row = ownPosition.getRow();
+            int column = ownPosition.getColumn();
+
+            int shiftRow = rowDelta;
+            int shiftColumn = columnDelta;
+            while (row + shiftRow <= board.getMaxRows() &&
+                    row + shiftRow >= 1 &&
+                    column + shiftColumn <= board.getMaxColumns() &&
+                    column + shiftColumn >= 1) {
+
+                diagonalPositions.add(Position.create
+                        (row + shiftRow, column + shiftColumn));
+                shiftRow += rowDelta;
+                shiftColumn += columnDelta;
+            }
+
+            cacheOfAlreadyCalculatedPositions.put(key, diagonalPositions);
         }
-        return new HashSet<>(diagonalPositions);
+
+        return diagonalPositions;
     }
 
     protected Set<Position> getThreatenedPositionsInRow(
             Bounded board, Position ownPosition) {
 
-        Set<Position> rowPositions = new HashSet<>(board.getMaxColumns());
-        int row = ownPosition.getRow();
-        int column = ownPosition.getColumn();
+        String key = new KeyBuilder()
+                .appendKeyPart("rowPositions")
+                .appendKeyPart(board.getMaxRows())
+                .appendKeyPart(board.getMaxColumns())
+                .appendKeyPart(ownPosition.getRow())
+                .appendKeyPart(ownPosition.getColumn())
+                .makeKey();
 
-        for (int j = 1; j <= board.getMaxColumns(); j++) {
-            if (j == column) {
-                continue;
+        Set<Position> rowPositions = cacheOfAlreadyCalculatedPositions.get(key);
+
+        if (rowPositions == null) {
+            rowPositions = new HashSet<>();
+
+            int row = ownPosition.getRow();
+            int column = ownPosition.getColumn();
+
+            for (int j = 1; j <= board.getMaxColumns(); j++) {
+                if (j == column) {
+                    continue;
+                }
+                rowPositions.add(Position.create(row, j));
             }
-            rowPositions.add(Position.create(row, j));
+
+            cacheOfAlreadyCalculatedPositions.put(key, rowPositions);
         }
         return rowPositions;
     }
@@ -244,19 +282,34 @@ public enum Figure {
     protected Set<Position> getThreatenedPositionsInColumn(
             Bounded board, Position ownPosition) {
 
-        int row = ownPosition.getRow();
-        int column = ownPosition.getColumn();
-        Set<Position> columnPositions = new HashSet<>(board.getMaxRows());
+        String key = new KeyBuilder()
+                .appendKeyPart("columnPositions")
+                .appendKeyPart(board.getMaxRows())
+                .appendKeyPart(board.getMaxColumns())
+                .appendKeyPart(ownPosition.getRow())
+                .appendKeyPart(ownPosition.getColumn())
+                .makeKey();
 
-        for (int i = 1; i <= board.getMaxRows(); i++) {
-            if (i == row) {
-                continue;
+        Set<Position> columnPositions = cacheOfAlreadyCalculatedPositions.get(key);
+
+        if (columnPositions == null) {
+            columnPositions = new HashSet<>();
+
+            int row = ownPosition.getRow();
+            int column = ownPosition.getColumn();
+
+            for (int i = 1; i <= board.getMaxRows(); i++) {
+                if (i == row) {
+                    continue;
+                }
+                columnPositions.add(Position.create(i, column));
             }
-            columnPositions.add(Position.create(i, column));
+
+            cacheOfAlreadyCalculatedPositions.put(key, columnPositions);
         }
+
         return columnPositions;
     }
-
 
     public static Figure fromString(String typeString) {
         if ("K".equals(typeString)) {

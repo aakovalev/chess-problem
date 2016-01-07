@@ -1,4 +1,3 @@
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.Queue;
@@ -6,6 +5,7 @@ import java.util.Set;
 
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsCollectionContaining.hasItem;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
@@ -41,19 +41,16 @@ public class ConfigurationSearcherTest {
         assertThat(searcher.numberOfUniqueConfigurations(2, 2, "2B"), is(4));
     }
 
-    @Ignore
     @Test
     public void twoKingsOneQueenOneBishopOneRookOneKnight() throws Exception {
         ConfigurationSearcher searcher = new ConfigurationSearcher(true);
-        System.out.println("Output :"
-                + searcher.numberOfUniqueConfigurations(6, 9, "2K 1Q 1B 1R 1N"));
+        assertEquals(20136752, searcher.numberOfUniqueConfigurations(6, 9, "2K 1Q 1B 1R 1N"));
     }
 
     @Test
     public void eightQueens() throws Exception {
         ConfigurationSearcher searcher = new ConfigurationSearcher(true);
-        System.out.println("Output :"
-                + searcher.numberOfUniqueConfigurations(8, 8, "8Q"));
+        assertEquals(92, searcher.numberOfUniqueConfigurations(8, 8, "8Q"));
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -83,9 +80,6 @@ public class ConfigurationSearcherTest {
         Set<String> foundLayouts =
                 searcher.findLayouts(board, FigureSpec.toFigureSequence("1K"));
 
-        Board expectedBoard = new Board(1, 3);
-        expectedBoard.place(Figure.KING, Position.create(1, 1));
-        expectedBoard.place(Figure.KING, Position.create(1, 3));
         assertThat(foundLayouts, hasItem("K1K"));
         verify(searcher, only()).findLayouts(any(Board.class), any(Queue.class));
     }
